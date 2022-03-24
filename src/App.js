@@ -1,25 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import {Component} from "react";
+import WeatherContainer from "./components/Weather/WeatherContainer";
+import connect from "react-redux/lib/connect/connect";
+import {requestTemperatureData} from "./redux/weather-reducer";
+import Preloader from "./components/Preloader/Preloader";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+    componentDidMount() {
+        this.props.requestTemperatureData()
+    }
+
+    render() {
+        return (<>
+                {this.props.initialized ? <WeatherContainer/> : <Preloader/>}
+            </>
+        );
+    }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+    initialized: state.weather.initialized
+})
+
+export default connect(mapStateToProps, {requestTemperatureData})(App);
